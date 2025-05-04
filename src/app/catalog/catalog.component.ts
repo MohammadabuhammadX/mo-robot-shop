@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IProduct } from './product.model';
+import { CartService } from '../cart.service';
 
 @Component({
   selector: 'bot-catalog',
@@ -7,9 +8,11 @@ import { IProduct } from './product.model';
   styleUrls: ['./catalog.component.css']
 })
 export class CatalogComponent {
-  products: IProduct[];
-filter:string='';
-  constructor() {
+  // products: IProduct[];
+  products : any
+  filter:string='';
+
+  constructor(private cartSvc: CartService) {
     this.products = [
       {
       id: 1,
@@ -186,18 +189,14 @@ filter:string='';
     },
   ];
   }
-  getDiscountedClasses(product:IProduct){
-    if(product.discount > 0)
-      return ['strikethrough'];
-    else return []; // arrays are nice because it's easy to add mroe classes , more elements to the array unlike a space-delimieted string. If we need multiple classes to be inside of this array that we return back,we can build that up and push new elements into the array 
-  }
   
-  getImageUrl(product:IProduct){
-    return '/assets/images/robot-parts/' + product.imageName;
+  addToCart(product: IProduct){
+    this.cartSvc.add(product);
   }
   getFilteredProducts(){
     return this.filter ===''
     ? this.products  //i want to return the entire list if the filter is an empty string 
-    : this.products.filter((product) => product.category === this.filter);//otherwise I Want to return filter expresstion , which takes the products array and filters it for products where the Category matches our new property
+    : this.products.filter(
+      (product: any) => product.category === this.filter);//otherwise I Want to return filter expresstion , which takes the products array and filters it for products where the Category matches our new property
   }
 }
